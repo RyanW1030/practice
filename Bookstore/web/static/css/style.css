@@ -1,0 +1,2928 @@
+/* =========================================
+   1. 全局变量与重置 (Reset & Variables)
+   ========================================= */
+:root {
+    /* 配色方案：现代清爽风 */
+    --primary-color: #3498db;       /* 主色：科技蓝 */
+    --primary-dark: #2980b9;        /* 深蓝：用于Hover */
+    --accent-color: #ff6b6b;        /* 强调色：活力红 (价格/购买按钮) */
+    --text-dark: #2c3e50;           /* 深色文字 */
+    --text-gray: #7f8c8d;           /* 灰色文字 */
+    --bg-color: #f5f7fa;            /* 全局背景灰 */
+    --white: #ffffff;
+
+    /* 阴影变量 */
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --hover-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+    --3d-shadow: -15px 15px 25px rgba(0,0,0,0.2);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased; /* 让字体更清晰 */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+/* 通用容器：限制最大宽度并居中 */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* =========================================
+   2. 顶部导航栏 (Navbar)
+   ========================================= */
+.navbar {
+    background-color: var(--white);
+    height: 70px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    position: sticky; /* 吸顶效果 */
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+/* 让导航栏内部容器横向排列 */
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.nav-item {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dark);
+    cursor: pointer;
+    position: relative; /* 为了下拉菜单定位 */
+    padding: 10px 0;
+}
+
+.nav-item:hover {
+    color: var(--primary-color);
+}
+
+/* 下拉菜单 (Dropdown) */
+.dropdown-content {
+    display: none; /* 默认隐藏 */
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--white);
+    min-width: 180px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    padding: 10px 0;
+    z-index: 1001;
+    border-top: 3px solid var(--primary-color);
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px 20px;
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f0f7ff;
+    color: var(--primary-color);
+}
+
+/* 鼠标移入显示下拉菜单 */
+.nav-item:hover .dropdown-content {
+    display: block;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* 搜索框 */
+.search-box form {
+    display: flex;
+    border: 1px solid #e1e1e1;
+    border-radius: 50px;
+    padding: 2px;
+    background: #fff;
+    transition: box-shadow 0.3s;
+}
+
+.search-box form:focus-within {
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+}
+
+.search-box input {
+    border: none;
+    padding: 8px 15px;
+    outline: none;
+    font-size: 14px;
+    background: transparent;
+    width: 200px;
+}
+
+.search-box button {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s;
+}
+
+.search-box button:hover {
+    background: var(--primary-dark);
+}
+
+/* =========================================
+   3. 现代 3D 轮播图 (Hero Carousel)
+   ========================================= */
+.hero-section {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 420px; /* 轮播图总高度 */
+    margin: 30px auto;
+    border-radius: 16px;
+    overflow: hidden; /* 超出圆角的内容隐藏 */
+    box-shadow: var(--hover-shadow);
+    background: #fff;
+}
+
+.carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.carousel-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out, transform 0.8s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 渐变背景 */
+    background: linear-gradient(120deg, #ffffff 0%, #f1f4f6 100%);
+    padding: 0 80px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.carousel-slide.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+/* 左侧：文字区域 */
+.slide-content {
+    flex: 1;
+    max-width: 55%;
+    padding-right: 40px;
+    z-index: 10;
+}
+
+.slide-content h2 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: var(--text-dark);
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.slide-content p {
+    font-size: 16px;
+    color: var(--text-gray);
+    margin-bottom: 30px;
+    line-height: 1.8;
+    /* 限制显示行数 */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 轮播图按钮 */
+.btn-hero {
+    display: inline-block;
+    padding: 12px 35px;
+    background-color: var(--accent-color);
+    color: var(--white);
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 6px 15px rgba(255, 107, 107, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.5);
+}
+
+/* 右侧：3D 悬浮书籍封面 */
+.slide-image-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px; /* 开启 3D 视角 */
+}
+
+.slide-image-wrapper img {
+    height: 320px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    border-radius: 6px;
+    /* 核心 3D 效果：旋转 + 阴影 */
+    transform: rotateY(-15deg) scale(0.9);
+    box-shadow: var(--3d-shadow);
+    transition: all 0.5s ease;
+}
+
+/* 鼠标悬停时，书本变正 */
+.carousel-slide:hover .slide-image-wrapper img {
+    transform: rotateY(0deg) scale(1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* 轮播图底部指示点 */
+.carousel-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.dot.active {
+    background: var(--accent-color);
+    width: 25px; /* 激活变成长条 */
+    border-radius: 10px;
+}
+
+/* =========================================
+   4. 书籍列表与卡片 (Book Grid)
+   ========================================= */
+.section-header {
+    margin: 50px 0 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 15px;
+}
+
+.section-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-dark);
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -17px;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background-color: var(--primary-color);
+    border-radius: 2px;
+}
+
+/* 网格布局 */
+.book-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 一行4个 */
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+/* 书籍卡片 */
+.book-card {
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.book-card:hover {
+    transform: translateY(-8px); /* 上浮效果 */
+    box-shadow: var(--hover-shadow);
+    border-color: transparent;
+}
+
+.book-img-wrapper {
+    width: 100%;
+    height: 240px;
+    overflow: hidden;
+    background-color: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.book-img-wrapper img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    transition: transform 0.5s;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+}
+
+.book-card:hover .book-img-wrapper img {
+    transform: scale(1.08); /* 图片轻微放大 */
+}
+
+.book-info {
+    padding: 20px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.book-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    /* 文字超出一行省略 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+.book-author {
+    font-size: 13px;
+    color: var(--text-gray);
+    margin-bottom: 15px;
+}
+
+.book-price-row {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price {
+    color: var(--accent-color);
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.btn-add {
+    background-color: var(--white);
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 6px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-add:hover {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+/* =========================================
+   5. 分页与底部 (Pagination & Footer)
+   ========================================= */
+.pagination {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 40px 0 60px;
+}
+
+.page-btn {
+    padding: 8px 18px;
+    background: var(--white);
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+.page-btn:hover {
+    background-color: #f1f1f1;
+    border-color: #ccc;
+}
+
+.page-btn.active {
+    background-color: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+footer {
+    background-color: var(--white);
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid #eaeaea;
+    margin-top: 60px;
+}
+
+footer p {
+    color: var(--text-gray);
+    font-size: 14px;
+}
+
+/* =========================================
+   6. 响应式适配 (Mobile Responsive)
+   ========================================= */
+@media (max-width: 992px) {
+    .book-grid { grid-template-columns: repeat(3, 1fr); }
+    .hero-section { height: auto; padding-bottom: 40px; }
+    .carousel-slide { padding: 40px; }
+    .slide-image-wrapper img { height: 240px; }
+}
+
+@media (max-width: 768px) {
+    .book-grid { grid-template-columns: repeat(2, 1fr); }
+    .carousel-slide { flex-direction: column-reverse; text-align: center; padding: 30px; }
+    .slide-content { max-width: 100%; padding-right: 0; margin-top: 20px; }
+    .slide-image-wrapper img { transform: none; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+    .section-title { font-size: 20px; }
+}
+/* =========================================
+   7. 认证页面专用样式 (Auth Page)
+   ========================================= */
+
+/* 认证页面的全屏容器，用于居中 */
+.auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+}
+
+/* 白色卡片主体 */
+.auth-card {
+    background: var(--white);
+    width: 420px;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 顶部 Logo 和标题 */
+.auth-header {
+    margin-bottom: 30px;
+}
+
+.auth-logo {
+    width: 120px;            /* 增大图片宽度 */
+    height: 120px;           /* 增大图片高度 */
+    margin-bottom: 20px;     /* 增加与标题的间距 */
+    object-fit: contain;     /* 确保图片内容完整显示，不被裁切 */
+    border: none;            /* 关键：移除原本的蓝色边框 */
+    border-radius: 0;        /* 可选：如果你希望图片保持原样不被切成圆形，设为0；如果图片本身就是圆的，这行无所谓 */
+}
+
+.auth-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.auth-subtitle {
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+/* 顶部 Tab 切换 (登录/注册) */
+.auth-tabs {
+    display: flex;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.tab-btn {
+    flex: 1;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-gray);
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: all 0.3s;
+    position: relative;
+}
+
+.tab-btn:hover {
+    color: var(--primary-color);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+}
+
+/* Tab 底部的高亮线条 */
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+/* 角色选择器 (仅登录页显示) */
+.role-selector {
+    display: flex;
+    background: #f0f2f5;
+    padding: 4px;
+    border-radius: 25px;
+    margin-bottom: 25px;
+    position: relative;
+    cursor: pointer;
+}
+
+.role-option {
+    flex: 1;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 2;
+    color: var(--text-gray);
+    transition: color 0.3s;
+}
+
+.role-option.active {
+    color: var(--white);
+}
+
+/* 滑块背景 */
+.role-slider {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: var(--primary-color);
+    border-radius: 20px;
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+
+/* 状态类：控制滑块位置 */
+.role-slider.right {
+    transform: translateX(100%);
+}
+
+/* 表单通用样式 */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border 0.3s, box-shadow 0.3s;
+    outline: none;
+    background: #fff;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn-block {
+    width: 100%;
+    padding: 12px;
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+}
+
+.btn-block:hover {
+    background: var(--primary-dark);
+}
+
+.btn-block:active {
+    transform: scale(0.98);
+}
+
+.auth-footer-link {
+    margin-top: 25px;
+    font-size: 14px;
+    color: var(--text-gray);
+    display: block;
+}
+
+.auth-footer-link:hover {
+    color: var(--primary-color);
+}
+
+/* 错误提示样式 */
+.error-msg {
+    color: var(--accent-color);
+    font-size: 12px;
+    margin-top: 5px;
+    display: none; /* 默认隐藏，JS控制显示 */
+    padding-left: 5px;
+}
+
+.error-msg.visible {
+    display: block;
+}
+
+/* 工具类：控制显示隐藏 */
+.d-none {
+    display: none !important;
+}
+/* =========================================
+   8. 补充：提示框与链接样式 (Alerts & Links)
+   ========================================= */
+/* 登录/注册页面的顶部提示框 */
+.alert-box {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.alert-error {
+    background-color: #fce4e4;
+    color: #cc0000;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+/* 高亮链接文字 */
+.link-highlight {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* 表单字段下方的错误小字 (复用你原有的 error-msg，增加 visible 控制) */
+.error-msg.visible {
+    display: block;
+}
+
+/* =========================================
+   9. 首页用户菜单 (Front Page User Menu)
+   ========================================= */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+    padding: 5px 12px;
+    border-radius: 25px;
+    transition: background 0.3s;
+    margin-left: 15px;
+}
+
+.user-menu:hover {
+    background-color: #f0f7ff;
+}
+
+.user-avatar-small {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 修正首页下拉菜单位置 */
+.user-menu .dropdown-content {
+    left: auto;
+    right: 0;
+    transform: none;
+    min-width: 160px;
+    top: 100%;
+    margin-top: 10px;
+    border-radius: 8px;
+}
+
+.user-menu:hover .dropdown-content {
+    display: block;
+}
+
+/* 导航栏注册按钮专用样式 */
+.btn-nav-register {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+.btn-nav-register:hover {
+    background: var(--primary-dark);
+    color: #fff;
+}
+/* =========================================
+   10. 书籍详情页 (Detail Page)
+   ========================================= */
+
+/* 详情页主体容器 */
+.detail-container {
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+    margin: 40px auto;
+    padding: 40px;
+    display: flex;
+    gap: 50px;
+    align-items: flex-start;
+}
+
+/* 左侧：封面区域 */
+.detail-image-section {
+    flex: 0 0 350px; /* 固定宽度 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+}
+
+.detail-image-section img {
+    width: 100%;
+    height: auto;
+    max-height: 450px;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); /* 立体投影 */
+}
+
+/* 右侧：信息区域 */
+.detail-info-section {
+    flex: 1;
+}
+
+/* 面包屑导航 (Category > Name) */
+.breadcrumb {
+    font-size: 14px;
+    color: var(--text-gray);
+    margin-bottom: 15px;
+}
+
+.breadcrumb a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* 书名与作者 */
+.detail-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--text-dark);
+    margin-bottom: 10px;
+    line-height: 1.3;
+}
+
+.detail-author {
+    font-size: 16px;
+    color: var(--text-gray);
+    margin-bottom: 25px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 价格与数据行 */
+.detail-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.detail-price {
+    font-size: 36px;
+    color: var(--accent-color);
+    font-weight: 800;
+}
+
+.detail-price::before {
+    content: '￥';
+    font-size: 20px;
+}
+
+.stock-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.sales-count {
+    font-size: 14px;
+    color: var(--text-gray);
+}
+
+/* 元数据网格 (出版社, ISBN 等) */
+.meta-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.meta-item {
+    font-size: 14px;
+    color: var(--text-dark);
+}
+
+.meta-label {
+    color: var(--text-gray);
+    margin-right: 8px;
+}
+
+/* 简介区域 */
+.detail-intro {
+    margin-bottom: 40px;
+}
+
+.intro-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-dark);
+}
+
+.intro-content {
+    font-size: 15px;
+    line-height: 1.8;
+    color: #555;
+    text-align: justify;
+}
+
+/* 操作按钮 */
+.action-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-lg {
+    padding: 15px 40px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--white);
+    border: none;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: var(--white);
+    color: var(--accent-color);
+    border: 2px solid var(--accent-color);
+}
+
+.btn-secondary:hover {
+    background: var(--accent-color);
+    color: var(--white);
+}
+
+/* 响应式适配 */
+@media (max-width: 768px) {
+    .detail-container {
+        flex-direction: column;
+        padding: 20px;
+    }
+    .detail-image-section {
+        flex: auto;
+        width: 100%;
+    }
+    .action-buttons {
+        flex-direction: column;
+    }
+    .btn-lg {
+        width: 100%;
+        justify-content: center;
+    }
+}
+/* =========================================
+   11. 购物车弹窗 (Cart Modal) - 新增
+   ========================================= */
+
+/* 遮罩层：带模糊效果 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px); /* 毛玻璃效果 */
+    z-index: 2000;
+    display: none; /* 默认隐藏 */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+/* 弹窗主体 */
+.modal-box {
+    background: var(--white);
+    width: 400px;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* 弹性动画 */
+    position: relative;
+}
+
+.modal-overlay.show .modal-box {
+    transform: scale(1);
+}
+
+/* 弹窗头部 */
+.modal-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.modal-stock {
+    font-size: 13px;
+    color: var(--text-gray);
+    background: #f0f2f5;
+    padding: 4px 10px;
+    border-radius: 12px;
+}
+
+/* 数量控制器 */
+.quantity-control {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.qty-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #fff;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qty-btn:hover:not(:disabled) {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    background: #f0f7ff;
+}
+
+.qty-btn:disabled {
+    background: #f5f5f5;
+    color: #ccc;
+    cursor: not-allowed;
+    border-color: #eee;
+}
+
+.qty-input {
+    width: 60px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    border: none;
+    outline: none;
+    color: var(--text-dark);
+}
+
+/* 底部按钮 */
+.modal-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-modal {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.2s;
+}
+
+.btn-cancel {
+    background: #f0f2f5;
+    color: var(--text-gray);
+}
+
+.btn-confirm {
+    background: var(--primary-color);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.btn-confirm:hover {
+    background: var(--primary-dark);
+}
+
+/* 错误提示 */
+.modal-error {
+    color: var(--accent-color);
+    font-size: 12px;
+    text-align: center;
+    height: 20px; /* 占位防止跳动 */
+    margin-top: -15px;
+    margin-bottom: 10px;
+}
+/* =========================================
+   12. 缺货状态样式 (Out of Stock UI) - 新增
+   ========================================= */
+
+/* 1. 确保图片容器可以定位遮罩层 */
+.book-img-wrapper {
+    position: relative;
+}
+
+/* 2. 缺货遮罩层：现代感的半透明毛玻璃效果 */
+.sold-out-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6); /* 白色半透明 */
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(2px); /* 轻微模糊背景图片 */
+    transition: all 0.3s ease;
+}
+
+/* 3. 缺货徽章 */
+.sold-out-badge {
+    background: rgba(44, 62, 80, 0.85); /* 深色背景 */
+    color: #fff;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    border-radius: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transform: rotate(-8deg); /* 稍微倾斜，增加设计感 */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+}
+
+/* 4. 缺货状态下的卡片整体样式 */
+.book-card.sold-out {
+    opacity: 0.8; /* 整体轻微透明 */
+}
+
+/* 缺货时文字颜色变淡 */
+.book-card.sold-out .book-title,
+.book-card.sold-out .book-author {
+    color: #999;
+}
+
+.book-card.sold-out .price {
+    color: #999; /* 价格不再高亮红色 */
+    text-decoration: line-through; /* 可选：给价格加删除线 */
+    font-size: 16px; /* 字体变小 */
+}
+
+/* 缺货卡片鼠标悬停时：减弱上浮效果，表明不可交互 */
+.book-card.sold-out:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow); /* 保持默认阴影，不增强 */
+    border-color: #eee;
+}
+
+/* 5. 禁用按钮样式 */
+.btn-add.disabled {
+    background-color: #f5f5f5;
+    color: #ccc;
+    border-color: #e0e0e0;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-add.disabled:hover {
+    background-color: #f5f5f5;
+    color: #ccc;
+    transform: none;
+}
+/* =========================================
+   13. 修复首页下拉菜单焦点丢失问题 (Fix Dropdown Issue)
+   ========================================= */
+
+.user-menu .dropdown-content {
+    /* 1. 解决断触问题：去除 margin，改用 padding 或透明边框 */
+    margin-top: 0 !important;
+    /* 使用透明边框作为“隐形桥梁”，让鼠标经过时依然保持 hover 状态 */
+    border-top: 10px solid transparent;
+    /* 修正定位，抵消边框的高度，保持视觉位置不变 */
+    background-clip: padding-box;
+
+    /* 2. 解决层级问题：确保菜单永远在轮播图之上 */
+    z-index: 10001 !important;
+
+    /* 优化：稍微调整一下阴影，让它看起来更自然 */
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+/* 确保父级导航栏层级足够高 */
+.navbar {
+    z-index: 10000 !important;
+}
+/* =========================================
+   12. 京东风格购物车 (JD Style Cart) - 新增
+   ========================================= */
+
+/* 页面背景微调 */
+.cart-page-body {
+    background-color: #f6f6f6; /* 京东灰背景 */
+}
+
+.cart-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 500px;
+}
+
+/* 购物车标题 */
+.cart-header-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-count-badge {
+    font-size: 14px;
+    color: var(--primary-color);
+    background: #eef6ff;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+/* 表格布局 */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-table th {
+    text-align: left;
+    padding: 15px 0;
+    color: #999;
+    font-size: 14px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+/* 商品行 */
+.cart-item-row {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.2s;
+}
+
+.cart-item-row:hover {
+    background-color: #fcfcfc;
+}
+
+.cart-item-row td {
+    padding: 25px 0;
+    vertical-align: top; /* 内容顶对齐 */
+}
+
+/* 商品信息列 */
+.col-product {
+    width: 45%;
+    display: flex;
+    gap: 15px;
+}
+
+.cart-img-wrapper {
+    width: 100px;
+    height: 100px;
+    border: 1px solid #eee;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.cart-img-wrapper img {
+    max-width: 90%;
+    max-height: 90%;
+}
+
+.cart-info-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cart-book-title {
+    font-size: 16px;
+    color: #333;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.cart-book-author {
+    font-size: 13px;
+    color: #999;
+}
+
+/* 单价与小计 */
+.col-price, .col-total {
+    width: 12%;
+    font-family: Verdana, sans-serif;
+}
+
+.col-total {
+    color: var(--accent-color); /* 京东红 */
+    font-weight: 700;
+}
+
+/* 数量控制器 (复用部分样式，微调) */
+.col-qty {
+    width: 15%;
+}
+
+.cart-qty-control {
+    display: flex;
+    border: 1px solid #ddd;
+    width: 100px;
+    border-radius: 4px;
+}
+
+.cart-qty-btn {
+    width: 30px;
+    height: 30px;
+    background: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #666;
+}
+
+.cart-qty-btn:hover {
+    background: #f5f5f5;
+}
+
+.cart-qty-input {
+    width: 40px;
+    border: none;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    text-align: center;
+    font-size: 14px;
+    outline: none;
+}
+
+/* 操作列 */
+.col-action {
+    width: 10%;
+}
+
+.link-delete {
+    color: #999;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.link-delete:hover {
+    color: var(--accent-color);
+}
+
+/* 底部结算栏 (Sticky Footer) */
+.cart-footer-bar {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    border-top: 1px solid #f0f0f0;
+    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    z-index: 100;
+}
+
+.cart-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.cart-footer-right {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.total-price-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.total-price-value {
+    font-size: 24px;
+    color: var(--accent-color);
+    font-weight: 800;
+    margin-left: 5px;
+}
+
+.total-price-value::before {
+    content: '￥';
+    font-size: 16px;
+}
+
+.btn-checkout {
+    background: var(--accent-color); /* 醒目的红色按钮 */
+    color: #fff;
+    border: none;
+    padding: 12px 40px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background 0.3s;
+    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+.btn-checkout:hover {
+    background: #ff5252;
+}
+
+/* 空购物车状态 */
+.empty-cart {
+    text-align: center;
+    padding: 80px 0;
+}
+
+.empty-cart i {
+    font-size: 60px;
+    color: #ddd;
+    margin-bottom: 20px;
+}
+
+.empty-cart p {
+    color: #999;
+    margin-bottom: 20px;
+}
+/* ... (保留你原有的样式) ... */
+
+/* =========================================
+   14. Toast 轻提示 (Toast Notification) - 新增
+   ========================================= */
+#toast-container {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: rgba(0, 0, 0, 0.85); /* 深黑半透明背景 */
+    color: #fff;
+    text-align: center;
+    border-radius: 50px; /* 胶囊形状 */
+    padding: 16px 24px;
+    position: fixed;
+    z-index: 3000;
+    left: 50%;
+    bottom: 30px; /* 默认位置 */
+    transform: translateX(-50%);
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.4s ease, bottom 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* 显示状态 */
+#toast-container.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px; /* 稍微上浮动画 */
+}
+
+/* 图标微调 */
+#toast-container i {
+    font-size: 18px;
+}
+/* ... (保留原有的所有样式) ... */
+
+/* =========================================
+   15. 个人中心页 (Profile Page) - 新增
+   ========================================= */
+
+/* 页面背景 */
+.profile-body {
+    background-color: #f5f7fa;
+}
+
+/* 主容器 */
+.profile-container {
+    max-width: 900px;
+    margin: 40px auto;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 顶部背景横幅 (装饰用) */
+.profile-header-bg {
+    height: 120px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, #2980b9 100%);
+    position: relative;
+}
+
+/* 个人信息主体区域 */
+.profile-content {
+    padding: 0 40px 40px;
+    margin-top: -60px; /* 让头像上浮，覆盖在背景上 */
+    position: relative;
+}
+
+/* 头像区域包装器 */
+.profile-avatar-wrapper {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid var(--white);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    background: #fff;
+    position: relative;
+    margin-bottom: 20px;
+    cursor: pointer;
+    overflow: hidden; /* 确保遮罩不溢出 */
+}
+
+.profile-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 头像上的“更换”遮罩层 */
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.profile-avatar-wrapper:hover .avatar-overlay {
+    opacity: 1;
+}
+
+/* 用户名展示 */
+.profile-name-block {
+    margin-bottom: 30px;
+}
+
+.profile-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.profile-balance {
+    display: inline-block;
+    background: #eef6ff;
+    color: var(--primary-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+/* 表单网格布局 */
+.profile-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+/* 表单字段样式微调 */
+.profile-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 14px;
+}
+
+.profile-form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s;
+    background: #f9f9f9;
+}
+
+.profile-form-control:focus {
+    background: #fff;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.profile-form-control[readonly] {
+    color: #999;
+    cursor: default;
+    background: #f0f0f0;
+}
+
+/* 按钮区域 */
+.profile-actions {
+    margin-top: 40px;
+    text-align: right;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.btn-save {
+    background: var(--primary-color);
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.1s;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+.btn-save:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+/* 头像选择弹窗专用样式 */
+.avatar-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.avatar-option {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.2s;
+    margin: 0 auto;
+}
+
+.avatar-option:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.avatar-option.selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+    transform: scale(1.05);
+}
+
+.avatar-option img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+    .profile-form-grid {
+        grid-template-columns: 1fr;
+    }
+    .profile-content {
+        text-align: center;
+    }
+    .profile-avatar-wrapper {
+        margin: 0 auto 20px;
+    }
+}
+/* ... (保留原有的所有样式) ... */
+
+/* =========================================
+   16. 阅读偏好标签 (Preferences Tags) - 新增
+   ========================================= */
+
+/* 偏好设置区域容器 */
+.profile-preferences-block {
+    grid-column: 1 / -1; /* 在 grid 布局中横跨两列 */
+    background: #f8faff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px dashed #d6e4ff;
+    margin-top: 10px;
+}
+
+.profile-preferences-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 标签容器 */
+.preference-tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+/* 标签本体 (label) */
+.preference-tag {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 隐藏原生的 checkbox */
+.preference-tag input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* 标签的视觉样式 */
+.tag-visual {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 18px;
+    background-color: #fff;
+    color: var(--text-gray);
+    border: 1px solid #e0e0e0;
+    border-radius: 50px; /* 胶囊形状 */
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+}
+
+/* Hover 效果 */
+.preference-tag:hover .tag-visual {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+/* 选中状态 (Checked) - 核心交互 */
+.preference-tag input:checked + .tag-visual {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+    padding-right: 14px; /* 稍微调整内边距给图标腾位置 */
+}
+
+/* 选中时显示的微小对勾图标 (使用伪元素) */
+.preference-tag input:checked + .tag-visual::before {
+    content: "\f00c"; /* FontAwesome Check Icon */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 6px;
+    font-size: 11px;
+}
+/* ... (保留原有的所有样式) ... */
+
+/* =========================================
+   17. 密码验证与增强布局 (Password & Layout) - 新增
+   ========================================= */
+
+/* 密码输入区域的特殊样式 */
+.password-group {
+    position: relative;
+}
+
+/* 密码不一致时的错误提示 */
+.validation-error {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 5px;
+    display: none; /* 默认隐藏 */
+    animation: fadeIn 0.3s ease;
+}
+
+.validation-error.show {
+    display: block;
+}
+
+.profile-form-control.error {
+    border-color: #e74c3c;
+    background-color: #fdf0ed;
+}
+
+/* 调整 Grid 布局，让地址栏看起来更协调 */
+.profile-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+/* 针对全宽元素的工具类 */
+.grid-full-width {
+    grid-column: 1 / -1;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* =========================================
+   18. 订单详情页增强样式 (Order Detail Enhanced)
+   ========================================= */
+
+/* 状态栏容器 */
+.order-status-card {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid #ddd; /* 默认灰色 */
+}
+
+/* 状态变色逻辑 */
+.order-status-card.status-0 { border-left-color: var(--accent-color); } /* 未付款-红 */
+.order-status-card.status-1 { border-left-color: var(--primary-color); } /* 待发货-蓝 */
+.order-status-card.status-2 { border-left-color: #2ecc71; } /* 已发货-绿 */
+.order-status-card.status-3 { border-left-color: #27ae60; } /* [新增] 已收货-深绿 */
+
+.status-icon-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.status-icon-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+}
+
+.status-text h2 {
+    font-size: 20px;
+    color: var(--text-dark);
+    margin-bottom: 5px;
+}
+
+.status-text p {
+    color: #999;
+    font-size: 14px;
+}
+
+/* 物流/收货信息卡片 */
+.logistics-card {
+    background: #f9f9f9;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-top: 20px;
+    display: flex;
+    gap: 30px;
+    font-size: 14px;
+    color: #555;
+}
+
+.logistics-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logistics-item i {
+    color: var(--primary-color);
+}
+
+/* 底部支付操作栏 */
+.payment-action-bar {
+    margin-top: 30px;
+    padding: 20px;
+    background: #fffbe6; /* 淡淡的黄色背景提醒支付 */
+    border: 1px solid #ffe58f;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balance-info {
+    font-size: 14px;
+    color: #856404;
+}
+
+.balance-val {
+    font-weight: bold;
+    color: var(--accent-color);
+}
+
+.btn-pay {
+    background: var(--accent-color);
+    color: #fff;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.4);
+    transition: all 0.3s;
+}
+
+.btn-pay:hover {
+    background: #ff5252;
+    transform: translateY(-2px);
+}
+/* =========================================
+   19. 管理员后台专用样式 (Admin Dashboard)
+   ========================================= */
+
+/* 后台整体布局容器 */
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f3f4f6;
+}
+
+/* 1. 左侧侧边栏 */
+.admin-sidebar {
+    width: 260px;
+    background-color: #2c3e50; /* 深色背景 */
+    color: #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: width 0.3s;
+}
+
+.admin-logo {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--white);
+    background-color: #243342; /* 比侧边栏稍深 */
+    border-bottom: 1px solid #34495e;
+    letter-spacing: 1px;
+}
+
+.sidebar-menu {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    color: #bdc3c7;
+    font-size: 15px;
+    transition: all 0.3s;
+    cursor: pointer;
+    text-decoration: none;
+    border-left: 4px solid transparent;
+}
+
+.sidebar-item i {
+    width: 25px;
+    font-size: 18px;
+    margin-right: 10px;
+    text-align: center;
+}
+
+.sidebar-item:hover {
+    background-color: #34495e;
+    color: var(--white);
+}
+
+.sidebar-item.active {
+    background-color: #34495e;
+    color: var(--primary-color); /* 高亮色 */
+    border-left-color: var(--primary-color);
+}
+
+.admin-user-info {
+    padding: 20px;
+    border-top: 1px solid #34495e;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+}
+
+/* 2. 右侧主体内容 */
+.admin-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+}
+
+.admin-header {
+    height: 70px;
+    background: var(--white);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.page-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.admin-content {
+    padding: 30px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* 3. 后台数据表格 (比前台更紧凑) */
+.admin-card {
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: var(--card-shadow);
+    padding: 25px;
+}
+
+.admin-toolbar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.admin-table th {
+    background-color: #f8f9fa;
+    color: var(--text-gray);
+    font-weight: 600;
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.admin-table td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    color: var(--text-dark);
+    vertical-align: middle;
+}
+
+.admin-table tr:hover {
+    background-color: #fcfcfc;
+}
+
+/* 操作按钮组 */
+.action-btn-group {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-edit {
+    background-color: #eef6ff;
+    color: var(--primary-color);
+}
+.btn-edit:hover { background-color: var(--primary-color); color: #fff; }
+
+.btn-danger {
+    background-color: #fff0f0;
+    color: #e74c3c;
+}
+.btn-danger:hover { background-color: #e74c3c; color: #fff; }
+
+.btn-success {
+    background-color: #e8f5e9;
+    color: #27ae60;
+}
+.btn-success:hover { background-color: #27ae60; color: #fff; }
+
+/* 状态标签 */
+.badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.badge-gray { background: #eee; color: #666; }
+.badge-blue { background: #e3f2fd; color: #2196f3; }
+.badge-green { background: #e8f5e9; color: #4caf50; }
+
+/* 模态框表单样式覆盖 */
+.admin-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+.admin-form-row.full { grid-template-columns: 1fr; }
+/* =========================================
+   20. 表单控件增强 (Form Enhancements)
+   ========================================= */
+
+/* 下拉菜单样式 */
+.form-select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    background: #fff url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007CB2%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 15px center;
+    background-size: 12px;
+    appearance: none; /* 移除原生箭头 */
+    transition: border 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* 文本域样式 */
+.form-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    resize: vertical; /* 允许垂直拉伸 */
+    min-height: 100px;
+    font-family: inherit;
+    transition: border 0.3s;
+}
+
+.form-textarea:focus {
+    border-color: var(--primary-color);
+}
+
+/* 文件上传美化 */
+.file-upload-wrapper {
+    position: relative;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.3s;
+    background: #fafafa;
+    cursor: pointer;
+}
+
+.file-upload-wrapper:hover {
+    border-color: var(--primary-color);
+    background: #f0f7ff;
+}
+
+.file-upload-wrapper input[type="file"] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-gray);
+    pointer-events: none; /* 让点击穿透到 input */
+}
+
+.upload-placeholder i {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: var(--primary-color);
+}
+
+.upload-placeholder span {
+    font-size: 13px;
+}
+
+/* 图片预览容器 */
+.img-preview-box {
+    margin-top: 10px;
+    height: 100px;
+    display: none; /* 默认隐藏 */
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 6px;
+    padding: 5px;
+}
+
+.img-preview-box.show {
+    display: flex;
+}
+
+.img-preview-box img {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+}
+
+/* 模态框滚动优化 */
+.modal-box {
+    max-height: 90vh; /* 防止超出屏幕 */
+    overflow-y: auto; /* 允许内部滚动 */
+    padding-right: 5px; /* 预留滚动条空间 */
+}
+
+/* ISBN 输入提示 */
+.input-helper {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    display: block;
+}
+/* =========================================
+   20. 购物车页面增强 (Cart Page Enhanced)
+   ========================================= */
+
+/* 页面背景微调 */
+.cart-page-body {
+    background-color: #f6f6f6;
+}
+
+/* 底部结算栏层级提升 (防止被其他元素遮挡) */
+.cart-footer-bar {
+    z-index: 999;
+}
+
+/* 书籍元信息 (ISBN/作者) 排版 */
+.cart-book-meta {
+    font-size: 12px;
+    color: #999;
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+/* 图片容器相对定位，用于容纳遮罩 */
+.cart-img-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+/* 状态遮罩层 (下架/库存不足) */
+.cart-img-wrapper .sold-out-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.75); /* 白色半透明 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    backdrop-filter: blur(1px); /* 轻微毛玻璃 */
+}
+
+/* 遮罩层上的文字徽章 */
+.sold-out-badge {
+    background: rgba(44, 62, 80, 0.9);
+    color: #fff;
+    padding: 3px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* 无效行样式 (置灰，表明不可选) */
+.cart-item-row.disabled {
+    opacity: 0.75;
+    background-color: #fafafa;
+}
+
+/* 红色警告文字 (库存紧张/不足) */
+.text-danger {
+    color: var(--accent-color);
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.text-danger i {
+    margin-right: 4px;
+}
+
+/* 复选框样式增强 */
+input[type="checkbox"] {
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+    vertical-align: middle;
+}
+/* =========================================
+   21. 后台搜索栏与批量操作 (Admin Toolbar Enhanced)
+   ========================================= */
+
+/* 搜索表单容器 */
+.admin-search-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+/* 搜索下拉菜单 */
+.admin-search-select {
+    padding: 6px 25px 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+    background-color: #fff;
+    cursor: pointer;
+    color: var(--text-dark);
+    /* 简单的自定义箭头背景 */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 8px;
+    appearance: none;
+}
+
+.admin-search-select:focus {
+    border-color: var(--primary-color);
+}
+
+/* 搜索输入框 */
+.admin-search-input {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    outline: none;
+    width: 180px;
+    transition: width 0.3s;
+}
+
+.admin-search-input:focus {
+    width: 220px;
+    border-color: var(--primary-color);
+}
+
+/* 复选框微调 */
+.book-check {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+    vertical-align: middle;
+}
+/* =========================================
+   22. 后台工具栏与交互优化 (Admin Toolbar Enhanced V2)
+   ========================================= */
+
+/* 1. 统一工具栏按钮风格 */
+/* 基础按钮样式：确保高度、圆角、字体一致 */
+.btn-toolbar-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px; /* 固定高度 */
+    padding: 0 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    white-space: nowrap;
+}
+
+.btn-toolbar-action i {
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+.btn-toolbar-action:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+/* 颜色变体：实心蓝 (新增) */
+.btn-action-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+.btn-action-primary:hover {
+    background-color: var(--primary-dark);
+    box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+}
+
+/* 颜色变体：实心红 (删除) */
+.btn-action-danger {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+.btn-action-danger:hover {
+    background-color: #ff5252;
+    box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+/* 2. 搜索表单容器优化 */
+.admin-search-form {
+    display: flex;
+    gap: 8px; /* 元素间距 */
+    align-items: center;
+    background: #fff;
+    padding: 0;
+    border: none;
+}
+
+/* 3. 搜索控件高度统一 */
+.admin-search-select,
+.admin-search-input,
+.btn-search-icon {
+    height: 38px; /* 与按钮高度一致 */
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* 下拉菜单 */
+.admin-search-select {
+    padding: 0 30px 0 12px;
+    outline: none;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    color: var(--text-dark);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 10px;
+    min-width: 140px;
+}
+
+.admin-search-select:hover {
+    border-color: #bbb;
+    background-color: #fff;
+}
+
+/* 输入框 */
+.admin-search-input {
+    padding: 0 12px;
+    width: 200px;
+    transition: all 0.3s;
+}
+
+.admin-search-input:focus {
+    width: 240px;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+/* 纯图标搜索按钮 */
+.btn-search-icon {
+    width: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f7ff;
+    color: var(--primary-color);
+    border: 1px solid #d6e9f9;
+    cursor: pointer;
+}
+
+.btn-search-icon:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+/* =========================================
+   23. 订单列表页增强 (Order List Enhanced)
+   ========================================= */
+
+/* 1. 强制表格内容居中对齐 */
+.order-table th,
+.order-table td {
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+/* 2. 状态徽章通用样式 */
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+/* 状态 0: 未付款 (红色 - 警示) */
+.status-0 {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+/* 状态 1: 已付款未发货 (蓝色 - 处理中) */
+.status-1 {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border: 1px solid #bbdefb;
+}
+
+/* 状态 2: 已发货 (橙色 - 运输中) */
+.status-2 {
+    background-color: #fff3e0;
+    color: #ef6c00;
+    border: 1px solid #ffe0b2;
+}
+
+/* 状态 3: 已收货 (绿色 - 完成) */
+.status-3 {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+/* 3. 订单号样式 */
+.order-id-font {
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    color: #555;
+    font-weight: 600;
+}
+
+/* 4. 操作按钮微调 */
+.btn-action-group {
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* 按钮间距 */
+}
+
+/* 撤单按钮 (灰色/弱化) */
+.btn-cancel-order {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #666;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.btn-cancel-order:hover {
+    background-color: #f5f5f5;
+    color: #333;
+    border-color: #ccc;
+}
+
+/* 详情按钮 (蓝色/主要) */
+.btn-view-detail {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border: 1px solid var(--primary-color);
+    background-color: #eef6ff;
+    color: var(--primary-color);
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.btn-view-detail:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+/* =========================================
+   24. 回收站与高级操作样式 (Recycle Bin & Advanced Actions)
+   ========================================= */
+
+/* 1. 工具栏切换按钮 */
+.btn-toggle-mode {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 38px;
+    padding: 0 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    color: #555;
+    transition: all 0.2s;
+    margin-left: 10px;
+}
+
+.btn-toggle-mode:hover {
+    background-color: #f8f9fa;
+    border-color: #ccc;
+    color: #333;
+}
+
+.btn-toggle-mode i {
+    margin-right: 6px;
+}
+
+/* 2. 彻底删除按钮 (深红/黑色警示) */
+.btn-action-dark {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.btn-action-dark:hover {
+    background-color: #23272b;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.btn-dark-sm {
+    background-color: #343a40;
+    color: #fff;
+}
+.btn-dark-sm:hover {
+    background-color: #1d2124;
+    color: #fff;
+}
+
+/* 3. 还原按钮 (青色/恢复) */
+.btn-action-restore {
+    background-color: #17a2b8;
+    color: #fff;
+}
+
+.btn-action-restore:hover {
+    background-color: #138496;
+    box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
+}
+
+.btn-restore-sm {
+    background-color: #e0f7fa;
+    color: #006064;
+}
+.btn-restore-sm:hover {
+    background-color: #006064;
+    color: #fff;
+}
+
+/* 4. 回收站模式下的提示条 */
+.recycle-notice {
+    background-color: #fff3cd;
+    color: #856404;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    border: 1px solid #ffeeba;
+}
+
+.recycle-notice i {
+    margin-right: 8px;
+    font-size: 16px;
+}
+/* =========================================
+   25. 后台订单表格与UI修复 (Admin Order Fixes)
+   ========================================= */
+
+/* 1. 强制表头不换行，防止字体堆叠 */
+.admin-table th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 13px; /* 稍微减小字体以容纳更多内容 */
+}
+
+/* 2. 优化收货信息列的显示 (允许换行，限制高度) */
+.cell-address {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+    max-width: 250px; /* 限制最大宽度 */
+}
+
+/* 3. 补充缺失的徽章颜色 (对应已发货/未付款) */
+.badge-red {
+    background-color: #fce4e4;
+    color: #c62828;
+}
+
+.badge-orange {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+/* 4. 优化订单号字体 */
+.font-monospace {
+    font-family: Consolas, Monaco, "Courier New", monospace;
+    font-weight: 600;
+    color: #555;
+}
+
+/* 5. 修复表格内垂直对齐 */
+.admin-table td {
+    vertical-align: middle !important;
+}
+/* =========================================
+   26. [核心修复] 强制徽章与按钮不换行
+   ========================================= */
+
+/* 1. 修复状态徽章被挤压换行的问题 */
+.status-badge {
+    white-space: nowrap !important; /* 核心：禁止文字换行 */
+    display: inline-flex;           /* 保证内部元素水平排列 */
+    align-items: center;
+    justify-content: center;
+    min-width: 60px;                /* 设置最小宽度，防止极度压缩 */
+}
+
+/* 2. 修复操作按钮被挤压换行的问题 */
+.btn-sm {
+    white-space: nowrap !important; /* 核心：禁止文字换行 */
+    display: inline-flex;           /* 保证图标和文字在一行 */
+    align-items: center;
+    justify-content: center;
+    gap: 4px;                       /* 图标和文字间距 */
+}
+
+/* 3. 修复表头堆叠 */
+.admin-table th {
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 4. 优化订单号显示 (允许在必要时换行，牺牲一点高度换取宽度) */
+.font-monospace {
+    word-break: break-all; /* 允许长UUID换行，避免撑破表格 */
+    font-size: 13px;
+    line-height: 1.4;
+    display: block;        /* 块级显示 */
+    max-width: 280px;      /* 限制最大宽度 */
+}
+/* =========================================
+   27. [新增] 确认收货按钮样式
+   ========================================= */
+
+/* 确认收货按钮 (绿色 - 代表成功/完成) */
+.btn-confirm-receipt {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border: 1px solid #28a745;
+    background-color: #f0fff4; /* 极淡的绿色背景 */
+    color: #28a745;
+    border-radius: 4px;
+    font-size: 12px;
+    transition: all 0.2s;
+    /* 继承核心修复中的不换行属性 */
+    white-space: nowrap !important;
+}
+
+.btn-confirm-receipt:hover {
+    background-color: #28a745;
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+}
+
+.btn-confirm-receipt i {
+    margin-right: 4px;
+}
