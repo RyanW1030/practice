@@ -86,7 +86,9 @@ public class userServiceImpl implements userService {
                     return -1;
                 }
                 ArrayList<String> order_ids = userOrderDAO.getOrderIds(connection,userIds);
-                orderitemDAO.delete(connection,order_ids.toArray(new String[0]));
+                if(order_ids!=null&&order_ids.size()>0){
+                    orderitemDAO.delete(connection,order_ids.toArray(new String[0]));
+                }
                 userOrderDAO.delete(connection,userIds);
                 cartitemDAO.deleteByUserId(connection,userIds);
                 userpreferenceDAO.delete(connection,userIds);
