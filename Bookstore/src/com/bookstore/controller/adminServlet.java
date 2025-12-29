@@ -139,10 +139,17 @@ public class adminServlet extends baseServlet{
         request.setAttribute("charge",recharge);
         List(request,response);
     }
-    protected void resetPassword(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
-        int user_id = Integer.parseInt(request.getParameter("user_id"));
+    protected void resetPwd(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+        int user_id = Integer.parseInt(request.getParameter("id"));
         int resetPassword = userService.resetPassword(user_id);
         request.setAttribute("resetPassword",resetPassword);
+        List(request,response);
+    }
+    protected void deleteUser(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+        String userIds = request.getParameter("ids");
+        int[] user_ids = WebUtils.parseIntArray(userIds);
+        int delete = userService.delete(user_ids);
+        request.setAttribute("delete",delete);
         List(request,response);
     }
 }
