@@ -50,7 +50,12 @@ public class bookDAOImpl extends baseDAO<Book> implements bookDAO {
     public Book selectById(Connection connection, int id) {
         String sql="select * from book where id=?";
         ArrayList<Book> retrieve = retrieve(connection, sql, id);
-        return retrieve.get(0);
+        if(retrieve.size()>0){
+            return retrieve.get(0);
+        }
+        else{
+            return null;
+        }
     }
 
     @Override
