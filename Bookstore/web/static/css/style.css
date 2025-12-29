@@ -2926,3 +2926,50 @@ input[type="checkbox"] {
 .btn-confirm-receipt i {
     margin-right: 4px;
 }
+/* =========================================
+   28. [新增] 订单详情页失效商品样式
+   ========================================= */
+
+/* 失效/下架商品行的整体降级效果 */
+.cart-item-row.item-invalid {
+    background-color: #fcfcfc;
+    color: #999;
+}
+
+/* 让失效商品的图片变灰 */
+.cart-item-row.item-invalid .cart-img-wrapper img {
+    filter: grayscale(100%);
+    opacity: 0.6;
+}
+
+/* 商品状态徽章容器 */
+.item-status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+
+/* 红色徽章：商品已失效 (物理删除) */
+.badge-danger-light {
+    background-color: #fce4e4;
+    color: #c0392b;
+    border: 1px solid #f5c6cb;
+}
+
+/* 灰色徽章：商品已下架 (逻辑删除) */
+.badge-gray-light {
+    background-color: #e9ecef;
+    color: #636c72;
+    border: 1px solid #ced4da;
+}
+
+/* 修正快照数据的显示样式 */
+.snapshot-info {
+    font-size: 12px;
+    color: #b0b0b0;
+    font-style: italic;
+    margin-top: 4px;
+}
