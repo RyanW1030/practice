@@ -45,8 +45,12 @@
     String currentOrderId = (String) request.getAttribute("currentOrderId");
     UserOrder userOrder = (UserOrder) request.getAttribute("userOrder");
     LinkedHashMap<OrderItem, Book> orderMap = (LinkedHashMap<OrderItem, Book>) request.getAttribute("orderItems");
-    UserInfo user = (UserInfo) session.getAttribute("user");
-
+// 优先尝试从 request 获取（这是 Servlet 刚查出来的最新数据）
+    UserInfo user = (UserInfo) request.getAttribute("user");
+// 如果 request 里没有（防止空指针），再兜底从 session 里拿
+    if (user == null) {
+        user = (UserInfo) session.getAttribute("user");
+    }
     if (currentOrderId == null) currentOrderId = "未知订单";
     if (userOrder == null) userOrder = new UserOrder();
     if (user == null) {

@@ -69,6 +69,8 @@ public class orderServlet extends baseServlet {
         }
         else {
             int pay = userOrderService.pay(order_id, user.getId());
+            UserInfo updateUser = userService.selectById(user.getId());
+            request.getSession().setAttribute("user",updateUser);
             request.setAttribute("order_id",order_id);
             List(request,response);
         }
