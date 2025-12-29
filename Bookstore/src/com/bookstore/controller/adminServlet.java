@@ -137,12 +137,14 @@ public class adminServlet extends baseServlet{
         UserInfo user = WebUtils.param2Bean(request, UserInfo.class);
         int recharge = userService.recharge(user);
         request.setAttribute("charge",recharge);
+        request.setAttribute("tab", "users");
         List(request,response);
     }
     protected void resetPwd(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
         int user_id = Integer.parseInt(request.getParameter("id"));
         int resetPassword = userService.resetPassword(user_id);
         request.setAttribute("resetPassword",resetPassword);
+        request.setAttribute("tab", "users");
         List(request,response);
     }
     protected void deleteUser(HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
@@ -150,6 +152,7 @@ public class adminServlet extends baseServlet{
         int[] user_ids = WebUtils.parseIntArray(userIds);
         int delete = userService.delete(user_ids);
         request.setAttribute("delete",delete);
+        request.setAttribute("tab", "users");
         List(request,response);
     }
 }
