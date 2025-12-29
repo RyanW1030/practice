@@ -186,7 +186,7 @@
             return;
         }
         // 注意：这里需要带上 userId 参数
-        window.location.href = "${pageContext.request.contextPath}/cartServlet?action=add&bookId=" + bookId + "&userId=" + currentUserId + "&count=1";
+        window.location.href = "${pageContext.request.contextPath}/cartServlet?action=add&book_id=" + bookId + "&user_id=" + currentUserId + "&count=1";
     }
 
     function buyNow(bookId) {
@@ -196,7 +196,7 @@
             }
             return;
         }
-        window.location.href = "${pageContext.request.contextPath}/cartServlet?action=add&bookId=" + bookId + "&userId=" + currentUserId + "&count=1&isBuyNow=true";
+        window.location.href = "${pageContext.request.contextPath}/cartServlet?action=add&book_id=" + bookId + "&user_id=" + currentUserId + "&count=1&isBuyNow=true";
     }
 </script>
 
