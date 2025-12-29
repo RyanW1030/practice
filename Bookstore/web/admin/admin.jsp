@@ -23,6 +23,9 @@
      - 书籍操作: "add", "update", "delete", "erase", "recycleBooks"
      - 订单操作: "shipOrder"
      - 用户操作: "charge" (充值), "resetPassword" (重置密码), "delete" (删除用户)
+     delete>0  删除操作成功
+     delete=0 删除操作失败
+     delete=-1 删除操作失败（用户有执行中的订单）
 
   4. [Request 参数] (URL/Form 参数)
      - tab: "books" | "users" | "orders" (默认 "books")
@@ -554,7 +557,19 @@
     <% if (shipResult != null) { %> showToast(<%= shipResult > 0 %> ? "发货成功！" : "发货失败。"); <% } %>
     <% if (chargeResult != null) { %> showToast(<%= chargeResult > 0 %> ? "充值成功！" : "充值失败。"); <% } %>
     <% if (resetPwdResult != null) { %> showToast(<%= resetPwdResult > 0 %> ? "密码重置成功！" : "重置失败。"); <% } %>
-    <% if (deleteResult != null) { %> showToast(<%= deleteResult > 0 %> ? "删除操作成功！" : "删除失败。"); <% } %>
+    <%--<% if (deleteResult != null) { %> showToast(<%= deleteResult > 0 %> ? "删除操作成功！" : "删除失败。"); <% } %>--%>
+    <%-- [修改后]：增加对 -1 状态码的判断 --%>
+    <% if (deleteResult != null) {
+           String msg = "删除失败。";
+           if (deleteResult == -1) {
+               msg = "操作拒绝：该用户有未完成订单（待发货/待收货），无法删除！";
+           } else if (deleteResult > 0) {
+               msg = "删除操作成功！";
+           }
+    %>
+    showToast("<%= msg %>");
+    <% } %>
+
 
     // --- 3. 书籍模块交互 ---
     function toggleAllBooks(source) {
