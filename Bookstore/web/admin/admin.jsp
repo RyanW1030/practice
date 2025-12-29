@@ -6,7 +6,7 @@
   在此区域集中定义页面与后端的“契约”。
   ---------------------------------------------------------------------------------
   本页面文件: admin.jsp
-  页面描述: 管理员后台核心页面，集成书籍管理(含回收站)、订单管理、用户管理。
+  页面描述: 管理员后台核心页面，集成书籍管理、订单监控、用户管理(含批量删除/充值)。
 
   1. [Session 属性]
      - 键名: "admin" (Admin)
@@ -22,19 +22,18 @@
   3. [Request 属性] (操作结果状态码，Integer，1=成功, 0=失败)
      - 书籍操作: "add", "update", "delete", "erase", "recycleBooks"
      - 订单操作: "shipOrder"
-     - 用户操作: "charge" (充值), "resetPassword" (重置密码)
-     - 通用操作: "delete" (复用于书籍和用户的删除结果)
+     - 用户操作: "charge" (充值), "resetPassword" (重置密码), "delete" (删除用户)
 
   4. [Request 参数] (URL/Form 参数)
      - tab: "books" | "users" | "orders" (默认 "books")
      - action: 对应 Servlet 方法名
-     - ids: 批量操作的 ID 字符串 (例如 "1,2,3")
-     - balance: 充值金额
+     - ids: 批量操作的 ID 字符串
+     - balance: 用户最终余额 (注意：是原有余额+充值金额的总和)
 
   5. [交互接口]
-     - 用户充值: /adminServlet?action=recharge (POST: id, balance)
-     - 批量删用户: /adminServlet?action=deleteUser (GET: ids)
-     - 重置密码: /adminServlet?action=resetPwd (GET: id)
+     - 用户充值: /adminServlet?action=recharge (POST: id, balance, tab=users)
+     - 批量删用户: /adminServlet?action=deleteUser (GET: ids, tab=users)
+     - 重置密码: /adminServlet?action=resetPwd (GET: id, tab=users)
   =================================================================================
 --%>
 
@@ -108,17 +107,14 @@
     // -----------------------------------------------------------
     // 2.5 操作结果状态码获取 (用于 Toast 反馈)
     // -----------------------------------------------------------
-    // 书籍相关
     Integer addResult = (Integer) request.getAttribute("add");
     Integer updateResult = (Integer) request.getAttribute("update");
     Integer eraseResult = (Integer) request.getAttribute("erase");
     Integer recycleResult = (Integer) request.getAttribute("recycleBooks");
-    // 订单相关
     Integer shipResult = (Integer) request.getAttribute("shipOrder");
-    // 用户相关
+    // 用户管理结果
     Integer chargeResult = (Integer) request.getAttribute("charge");
     Integer resetPwdResult = (Integer) request.getAttribute("resetPassword");
-    // 通用删除 (书籍/用户)
     Integer deleteResult = (Integer) request.getAttribute("delete");
 
     // -----------------------------------------------------------
@@ -148,6 +144,10 @@
         .text-left { text-align: left !important; }
         .text-right { text-align: right !important; }
         .text-nowrap { white-space: nowrap !important; min-width: 80px; }
+        /* 充值弹窗内的余额显示 */
+        .current-balance-display {
+            font-size: 13px; color: #666; margin-bottom: 8px; font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -356,6 +356,7 @@
                         <span style="font-size: 14px; color: #666; margin-right: 5px;">
                             共 <%= userList.size() %> 位注册用户
                         </span>
+                        <%-- 批量删除按钮 --%>
                         <button class="btn-toolbar-action btn-action-danger" onclick="batchDeleteUsers()">
                             <i class="fas fa-trash-alt"></i> 批量删除
                         </button>
@@ -392,14 +393,21 @@
                         </td>
                         <td class="text-center">
                             <div class="action-btn-group" style="justify-content: center;">
-                                <button class="btn-sm btn-success" onclick="openRechargeModal(<%= u.getId() %>, '<%= u.getUsername() %>')">
+                                <%--
+                                    [修改点] 充值按钮：传入 currentBalance
+                                    注意：u.getBalance() 返回 BigDecimal，JS中直接作为数值处理
+                                --%>
+                                <button class="btn-sm btn-success"
+                                        onclick="openRechargeModal(<%= u.getId() %>, '<%= u.getUsername() %>', <%= (u.getBalance()!=null?u.getBalance():0) %>)">
                                     <i class="fas fa-coins"></i> 充值
                                 </button>
+
                                 <a href="<%=contextPath%>/adminServlet?action=resetPwd&id=<%= u.getId() %>&tab=users"
                                    class="btn-sm btn-edit"
                                    onclick="return confirm('确定要重置该用户密码为 12345678 吗？')">
                                     <i class="fas fa-key"></i> 重置
                                 </a>
+
                                 <button class="btn-sm btn-danger" onclick="deleteSingleUser(<%= u.getId() %>, '<%= u.getUsername() %>')">
                                     <i class="fas fa-trash"></i> 删除
                                 </button>
@@ -459,19 +467,35 @@
     </div>
 </div>
 
-<%-- 2. 用户充值弹窗 --%>
+<%--
+   2. [修改] 用户充值弹窗
+   逻辑：输入增量金额 -> JS计算总额 -> 提交总额给后端
+--%>
 <div class="modal-overlay" id="rechargeModal">
     <div class="modal-box" style="width: 400px;">
         <div class="modal-header">
             <h3 class="modal-title">用户充值</h3>
             <p id="rechargeUserName" style="font-size: 14px; color: #666; margin-top: 5px;"></p>
         </div>
-        <form action="<%=contextPath%>/adminServlet?action=recharge&tab=users" method="post">
+        <%-- onsubmit 绑定计算函数 --%>
+        <form action="<%=contextPath%>/adminServlet?action=recharge&tab=users" method="post" onsubmit="return handleRechargeSubmit()">
             <input type="hidden" name="id" id="rechargeUserId" value="">
+
+            <%-- 隐藏域：存储原有余额（用于JS计算） --%>
+            <input type="hidden" id="rechargeOriginalBalance" value="0">
+
+            <%-- 隐藏域：存储最终提交给Servlet的余额（name="balance"） --%>
+            <input type="hidden" name="balance" id="rechargeFinalBalance" value="">
+
             <div class="form-group">
+                <%-- 显示当前余额 --%>
+                <div class="current-balance-display" id="currentBalanceText">当前余额：￥0.00</div>
+
                 <label>充值金额 (￥)</label>
-                <input type="number" step="0.01" name="balance" class="form-control" required placeholder="请输入金额" min="0.01">
+                <%-- 注意：这里的输入框没有 name 属性，不会直接提交给 Servlet --%>
+                <input type="number" step="0.01" id="rechargeAmountInput" class="form-control" required placeholder="请输入充值金额" min="0.01">
             </div>
+
             <div class="modal-actions">
                 <button type="button" class="btn-modal btn-cancel" onclick="closeRechargeModal()">取消</button>
                 <button type="submit" class="btn-modal btn-confirm" style="background-color: #28a745;">确认充值</button>
@@ -613,11 +637,45 @@
         if (!confirm("警告：确定要删除用户 [" + name + "] 吗？\n此操作将级联删除其所有数据！")) return;
         window.location.href = baseUrl + "?action=deleteUser&ids=" + id + "&tab=users";
     }
-    function openRechargeModal(id, name) {
+
+    // 打开充值弹窗：接收当前余额
+    function openRechargeModal(id, name, currentBalance) {
         document.getElementById('rechargeUserId').value = id;
         document.getElementById('rechargeUserName').innerText = "目标用户: " + name;
+
+        // 1. 保存原有余额
+        document.getElementById('rechargeOriginalBalance').value = currentBalance;
+        // 2. 显示原有余额
+        document.getElementById('currentBalanceText').innerText = "当前余额：￥" + parseFloat(currentBalance).toFixed(2);
+        // 3. 清空输入框
+        document.getElementById('rechargeAmountInput').value = "";
+
         rechargeModal.classList.add('show');
     }
+
+    // 提交前计算：最终余额 = 原有 + 输入
+    function handleRechargeSubmit() {
+        var originalElem = document.getElementById('rechargeOriginalBalance');
+        var inputElem = document.getElementById('rechargeAmountInput');
+        var finalElem = document.getElementById('rechargeFinalBalance');
+
+        var original = parseFloat(originalElem.value);
+        var input = parseFloat(inputElem.value);
+
+        if (isNaN(input) || input <= 0) {
+            alert("请输入正确的充值金额！");
+            return false;
+        }
+
+        // 核心修正逻辑：累加
+        var total = original + input;
+
+        // 赋值给隐藏域以便 Servlet 读取
+        finalElem.value = total.toFixed(2);
+
+        return true;
+    }
+
     function closeRechargeModal() {
         rechargeModal.classList.remove('show');
     }
